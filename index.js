@@ -4,7 +4,7 @@ var cluster = require("cluster")
 var log = require("./src/log")
 
 var port = +process.env.PORT || 8000;
-var routePrefix = process.env.ROUTE_PREFIX || "users";
+var routePrefix = process.env.ROUTE_PREFIX || "registry";
 
 if (cluster.isMaster) {
 

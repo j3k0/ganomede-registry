@@ -1,11 +1,14 @@
 log = require "./log"
 pingApi = require "./ping-api"
+registryApi = require "./registry-api"
 
 addRoutes = (prefix, server) ->
   log.info "adding routes"
 
   # Platform Availability
   pingApi.addRoutes prefix, server
+
+  registryApi.addRoutes prefix, server
 
 initialize = (callback) ->
   log.info "initializing backend"
