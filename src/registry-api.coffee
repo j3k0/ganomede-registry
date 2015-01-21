@@ -13,7 +13,7 @@ get = (req, res, next) ->
     type: s.type
     host: s.host
     port: s.port
-    pingMs: s.pingMs) for s in services when s.pingEndDate > now - 10000)
+    pingMs: s.pingMs) for s in services.all() when s.pingEndDate > now - 10000)
   next()
 
 post = (req, res, next) ->
@@ -33,14 +33,16 @@ post = (req, res, next) ->
   if !s.pingURI
     err = new restify.InvalidContentError "invalid service data"
     return sendError err, next
-  existing = (x for x in services when s.host == x.host and s.port == x.port)
+  existing = (x for x in services.all() when s.host == x.host and s.port == x.port)
   if existing.length > 0
+    log.info "service updated", s
     existing[0].type = s.type
     existing[0].pingURI = s.pingURI
     existing[0].pingMs = -1
     existing[0].pingStartDate = -1
     existing[0].pingEndDate = -1
   else
+    log.info "service added", s
     services.push
       type: s.type
       host: s.host
