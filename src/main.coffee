@@ -18,7 +18,7 @@ initialize = (callback) ->
 destroy = ->
   log.info "destroying backend"
 
-createProxyServer = -> proxy.createServer
+createProxyServer = -> proxy.createServer()
 
 module.exports =
   initialize: initialize

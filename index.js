@@ -74,6 +74,6 @@ else {
     // Start the proxy
     proxy = main.createProxyServer();
     proxy.listen(proxyPort, function() {
-        log.info("listening port " + port);
+        log.info("proxy listening at http://0.0.0.0:" + proxyPort);
     });
 }
