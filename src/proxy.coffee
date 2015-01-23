@@ -10,9 +10,9 @@ createServer = ->
     if uriArray.length > 1
       serviceType = uriArray[1]
       service = services.forType serviceType
-      if service
-        server = service[(Math.random() * 999999) % service.length]
-        bounce server.host, server.port
+      if service and service.length > 0
+        s = service[Math.floor(Math.random() * service.length)]
+        bounce s.host, s.port
         return
     res.statusCode = 404
     res.end "no such service found"

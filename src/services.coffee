@@ -1,9 +1,10 @@
 restify = require "restify"
 
 linkedServices = require "./linked-services"
+all = linkedServices.get()
 
 # Create JSON clients for each linked service
-for s in linkedServices.get()
+for s in all
   s.client = restify.createJsonClient
     url: "http://#{s.host}:#{s.port}"
 
@@ -21,11 +22,13 @@ readAbout = (s) ->
     s.pingEndDate = (+new Date)
     s.pingMs = s.pingEndDate - d0
 
-# Retrieve all services /about every 10 seconds
-setInterval ->
+readAllAbout = ->
   for s in linkedServices.get()
     readAbout s
-, 10000
+
+# Retrieve all services /about every 10 seconds
+readAllAbout
+setInterval readAllAbout, 1000
 
 module.exports =
   all: -> s for s in all when s.type

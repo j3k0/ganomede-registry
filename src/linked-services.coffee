@@ -3,7 +3,7 @@ linkedServices = []
 findLinkedServices = (env) ->
   linkedServices = []
   for name,value of env
-    match = name.match /SERVICE_.*_PORT/
+    match = name.match /^SERVICE_.*_PORT$/
     if match and match.index == 0
       http = value.replace "tcp://", "http://"
       a = value.split "/"
