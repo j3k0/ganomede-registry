@@ -33,7 +33,9 @@ post = (req, res, next) ->
   if !s.pingURI
     err = new restify.InvalidContentError "invalid service data"
     return sendError err, next
-  existing = (x for x in services.all() when s.host == x.host and s.port == x.port)
+  existing = (
+    x for x in services.all() when (
+      s.host == x.host and s.port == x.port))
   if existing.length > 0
     log.info "service updated", s
     existing[0].type = s.type
