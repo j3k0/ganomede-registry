@@ -13,6 +13,7 @@
   "license": "Private",
   "dependencies": {
     "blanket": "^1.1.6",
+    "bouncy": "^3.2.2",
     "bunyan": "^1.2.3",
     "coffee-script": "^1.8.0",
     "coffeelint": "^1.6.1",
@@ -26,7 +27,9 @@
   },
   "config": {
     "blanket": {
-      "pattern": [ "src" ],
+      "pattern": [
+        "src"
+      ],
       "data-cover-never": "node_modules",
       "loader": "./node-loaders/coffee-script"
     }

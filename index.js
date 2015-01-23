@@ -3,6 +3,7 @@ require('coffee-script/register');
 var cluster = require("cluster")
 var log = require("./src/log")
 
+var proxyPort = +process.env.PROXY_PORT || 8080;
 var port = +process.env.PORT || 8000;
 var routePrefix = process.env.ROUTE_PREFIX || "registry";
 
@@ -68,5 +69,11 @@ else {
     // Start the server
     server.listen(port, function() {
         log.info(server.name + " listening at " + server.url);
+    });
+
+    // Start the proxy
+    proxy = main.createProxyServer();
+    proxy.listen(proxyPort, function() {
+        log.info("listening port " + port);
     });
 }
