@@ -18,6 +18,7 @@ findLinkedServices = (env) ->
         linkedServices.push
           host: host
           port: port
+  linkedServices
 
 linkedServices = findLinkedServices process.env
 
