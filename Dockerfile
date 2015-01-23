@@ -1,5 +1,6 @@
 FROM node:0.10.33-slim
 EXPOSE 8000
+EXPOSE 8080
 MAINTAINER Jean-Christophe Hoelt <hoelt@fovea.cc>
 RUN useradd app -d /home/app
 WORKDIR /home/app/code
