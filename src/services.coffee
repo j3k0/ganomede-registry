@@ -1,4 +1,5 @@
 restify = require "restify"
+log = require "./log"
 
 linkedServices = require "./linked-services"
 all = linkedServices.get()
