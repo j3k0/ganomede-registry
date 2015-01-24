@@ -2,10 +2,10 @@ linkedServices = []
 
 findLinkedServices = (env) ->
   linkedServices = []
+  added = {}
   for name,value of env
     match = name.match /^SERVICE_.*_PORT$/
-    if match and match.index == 0
-      http = value.replace "tcp://", "http://"
+    if match and match.index == 0 and not added[value]
       a = value.split "/"
       if a.length > 2
         hostPort = a[2]
@@ -18,6 +18,7 @@ findLinkedServices = (env) ->
         linkedServices.push
           host: host
           port: port
+        added[value] = true
   linkedServices
 
 linkedServices = findLinkedServices process.env
