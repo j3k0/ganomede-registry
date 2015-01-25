@@ -2,10 +2,7 @@ require('coffee-script/register');
 
 var cluster = require("cluster")
 var log = require("./src/log")
-
-var proxyPort = +process.env.PROXY_PORT || 8080;
-var port = +process.env.PORT || 8000;
-var routePrefix = process.env.ROUTE_PREFIX || "registry";
+var config = require("./config");
 
 if (cluster.isMaster) {
 
@@ -31,7 +28,7 @@ else {
 
     // Intitialize backend, add routes
     main.initialize();
-    main.addRoutes(routePrefix, server);
+    main.addRoutes(config.routePrefix, server);
 
     // Handle uncaughtException, kill the worker
     server.on('uncaughtException', function (req, res, route, err) {
@@ -67,13 +64,13 @@ else {
     });
 
     // Start the server
-    server.listen(port, function() {
+    server.listen(config.port, function() {
         log.info(server.name + " listening at " + server.url);
     });
 
     // Start the proxy
     proxy = main.createProxyServer();
-    proxy.listen(proxyPort, function() {
-        log.info("proxy listening at http://0.0.0.0:" + proxyPort);
+    proxy.listen(config.proxyPort, function() {
+        log.info("proxy listening at http://0.0.0.0:" + config.proxyPort);
     });
 }

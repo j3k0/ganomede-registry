@@ -2,6 +2,7 @@ log = require "./log"
 bouncy = require "bouncy"
 services = require "./services"
 url = require "url"
+config = require "../config"
 
 createServer = ->
   server = bouncy (req, res, bounce) ->
@@ -13,6 +14,9 @@ createServer = ->
       if service and service.length > 0
         s = service[Math.floor(Math.random() * service.length)]
         bounce s.host, s.port
+        return
+      if serviceType == config.routePrefix
+        bounce config.port
         return
     res.statusCode = 404
     res.end "no such service found"
