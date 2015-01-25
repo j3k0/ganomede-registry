@@ -15,6 +15,7 @@ COPY .eslintignore /home/app/code/.eslintignore
 COPY coffeelint.json /home/app/code/coffeelint.json
 COPY Makefile /home/app/code/Makefile
 COPY index.js /home/app/code/index.js
+COPY config.js /home/app/code/config.js
 COPY tests /home/app/code/tests
 COPY src /home/app/code/src
 
