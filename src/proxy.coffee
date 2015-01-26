@@ -13,10 +13,14 @@ createServer = ->
       service = services.forType serviceType
       if service and service.length > 0
         s = service[Math.floor(Math.random() * service.length)]
-        bounce s.host, s.port
+        bounce s.host, s.port,
+          headers:
+            Connection: "close"
         return
       if serviceType == config.routePrefix
-        bounce config.port
+        bounce config.port,
+          headers:
+            Connection: "close"
         return
     res.statusCode = 404
     res.end "no such service found"
