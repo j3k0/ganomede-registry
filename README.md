@@ -32,15 +32,18 @@ Registry will:
  * request in HTTP their "/about" URI
  * expect a JSON body containing
 
+```js
     {
         "type": "users",
         "version": "1.0.0",
         "startDate": "2015-01-23T13:38:48+02:00"
     }
+```
 
- * request to `/{service-name}/{version/...` will then be proxied to the appropriate service.
-
-    "/users/v1/login" -> proxied to one of the "users" service instances.
+ * request to `/{service-name}/{version}/...` will then be proxied to the appropriate service.
+```js
+    "/users/v1/login" // proxied to one of the "users" service instances.
+```
 
 # API
 
@@ -48,19 +51,21 @@ Registry will:
 
 ### parameters
 
-    "type" (optional) filter by type
+    "type" (optional) filter by type (TODO)
 
 ### response [200] OK
 
     [
         {
             "type": "users",
+            "version": "1.0.1",
             "host": "192.168.1.2",
             "port": 8000,
             "pingMs": 12
         },
         {
-            "type": "users",
+            "type": "invitations",
+            "version": "1.0.3",
             "host": "192.168.1.4",
             "port": 8000,
             "pingMs": 15
