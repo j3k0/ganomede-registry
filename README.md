@@ -11,7 +11,7 @@ Relations
 ---------
 
  - List of running services is holded in memory.
- - REDIS store (TODO later)
+ - List of running services is discovered uing environment variables.
 
 Proxy
 -----
@@ -29,7 +29,7 @@ Background job
 Registry will:
 
  * check services defined in environment variables matching `SERVICE_*_PORT`
- * request in HTTP the "/about" URI
+ * request in HTTP their "/about" URI
  * expect a JSON body containing
 
     {
@@ -38,9 +38,13 @@ Registry will:
         "startDate": "2015-01-23T13:38:48+02:00"
     }
 
-# Services
+ * request to `/{service-name}/{version/...` will then be proxied to the appropriate service.
 
-## /registry/services [GET]
+    "/users/v1/login" -> proxied to one of the "users" service instances.
+
+# API
+
+## /registry/v1/services [GET]
 
 ### parameters
 
