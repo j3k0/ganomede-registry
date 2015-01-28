@@ -1,7 +1,8 @@
 {
-  "name": "users",
-  "version": "0.0.1",
-  "description": "users micro service",
+  "name": "registry",
+  "version": "1.0.0",
+  "api": "registry/v1",
+  "description": "registry micro service",
   "private": true,
   "main": "index.js",
   "scripts": {

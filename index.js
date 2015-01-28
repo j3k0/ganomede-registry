@@ -21,6 +21,7 @@ else {
     var main = require("./src/main");
 
     var server = restify.createServer();
+    proxy = main.createProxyServer();
 
     // Enable restify plugins
     server.use(restify.bodyParser());
@@ -48,6 +49,7 @@ else {
 
             // stop taking new requests
             server.close();
+            proxy.close();
 
             // Let the master know we're dead.  This will trigger a
             // 'disconnect' in the cluster master, and then it will fork
@@ -69,7 +71,6 @@ else {
     });
 
     // Start the proxy
-    proxy = main.createProxyServer();
     proxy.listen(config.proxyPort, function() {
         log.info("proxy listening at http://0.0.0.0:" + config.proxyPort);
     });

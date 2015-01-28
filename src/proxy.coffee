@@ -5,12 +5,14 @@ url = require "url"
 config = require "../config"
 
 createServer = ->
+
   server = bouncy (req, res, bounce) ->
+
     uri = url.parse(req.url).pathname
     uriArray = uri.split "/"
-    if uriArray.length > 1
-      serviceType = uriArray[1]
-      service = services.forType serviceType
+    if uriArray.length > 2
+      serviceType = uriArray[1] + "/" + uriArray[2]
+      service = services.forPrefix serviceType
       if service and service.length > 0
         s = service[Math.floor(Math.random() * service.length)]
         bounce s.host, s.port,

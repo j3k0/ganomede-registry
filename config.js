@@ -1,5 +1,7 @@
+var pkg = require("./package.json");
+
 module.exports = {
     proxyPort: +process.env.PROXY_PORT || 8080,
     port: +process.env.PORT || 8000,
-    routePrefix: process.env.ROUTE_PREFIX || "registry/v1"
+    routePrefix: process.env.ROUTE_PREFIX || pkg.api
 };

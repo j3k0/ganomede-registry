@@ -19,7 +19,10 @@ readAbout = (s) ->
       s.pingMs = -1
       s.pingEndDate = -1
       return
+    s.version = obj.version
     s.type = obj.type
+    majorVersion = obj.version.split(".")[0]
+    s.prefix = obj.type + "/v" + majorVersion
     s.pingEndDate = (+new Date)
     s.pingMs = s.pingEndDate - d0
 
@@ -33,7 +36,7 @@ setInterval readAllAbout, 1000
 
 module.exports =
   all: -> s for s in all when s.type
-  forType: (type) -> s for s in all when s.type == type
+  forPrefix: (prefix) -> s for s in all when s.prefix == prefix
   push: (x) -> all.push x
 
 # vim: ts=2:sw=2:et:
