@@ -8,7 +8,7 @@ all = [] # linkedServices.get()
 initialize = (options) ->
   options = options || {}
   linkedServices = options.linkedServices || require "./linked-services"
-  interval = options.interval || setInterval
+  interval = options.setInterval || setInterval
 
   # Create JSON clients for each linked service
   all = linkedServices.get()
