@@ -1,13 +1,24 @@
 restify = require "restify"
 log = require "./log"
 
-linkedServices = require "./linked-services"
-all = linkedServices.get()
+linkedServices = null # custom service finder
+interval = null # custom setInterval
+all = [] # linkedServices.get()
 
-# Create JSON clients for each linked service
-for s in all
-  s.client = restify.createJsonClient
-    url: "http://#{s.host}:#{s.port}"
+initialize = (options) ->
+  options = options || {}
+  linkedServices = options.linkedServices || require "./linked-services"
+  interval = options.interval || setInterval
+
+  # Create JSON clients for each linked service
+  all = linkedServices.get()
+  for s in all
+    s.client = restify.createJsonClient
+      url: "http://#{s.host}:#{s.port}"
+
+  # Retrieve all services /about every 10 seconds
+  readAllAbout
+  interval readAllAbout, 1000
 
 # Retrieve a service's /about
 readAbout = (s) ->
@@ -30,11 +41,8 @@ readAllAbout = ->
   for s in linkedServices.get()
     readAbout s
 
-# Retrieve all services /about every 10 seconds
-readAllAbout
-setInterval readAllAbout, 1000
-
 module.exports =
+  initialize: initialize
   all: -> s for s in all when s.type
   forPrefix: (prefix) -> s for s in all when s.prefix == prefix
   push: (x) -> all.push x
