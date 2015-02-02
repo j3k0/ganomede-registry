@@ -101,7 +101,7 @@ class JsonClient
       reply(null, {}, {}, mock)
 
   get: (path, callback) ->
-    _mockRespond('get', path, callback)
+    this._mockRespond('get', path, callback)
 
   head: notImplemented
   post: notImplemented
