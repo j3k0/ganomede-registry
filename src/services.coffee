@@ -3,7 +3,6 @@ log = require "./log"
 
 linkedServices = null # custom service finder
 interval = null # custom setInterval
-createJsonClient = null
 all = [] # linkedServices.get()
 
 initialize = (options) ->
