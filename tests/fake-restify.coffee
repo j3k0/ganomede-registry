@@ -80,7 +80,7 @@ class JsonClient
 
     this.mocks[method][path] = fn
 
-  _mockReposnd: (method, path, payload, callback) ->
+  _mockRespond: (method, path, payload, callback) ->
     if !this.mocks.hasOwnProperty(method)
       throw new Error('MethodNotSupported')
 
@@ -101,7 +101,7 @@ class JsonClient
       reply(null, {}, {}, mock)
 
   get: (path, callback) ->
-    _mockReposnd('get', path, callback)
+    _mockRespond('get', path, callback)
 
   head: notImplemented
   post: notImplemented
