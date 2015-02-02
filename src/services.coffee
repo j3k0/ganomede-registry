@@ -3,17 +3,20 @@ log = require "./log"
 
 linkedServices = null # custom service finder
 interval = null # custom setInterval
+createJsonClient = null
 all = [] # linkedServices.get()
 
 initialize = (options) ->
   options = options || {}
   linkedServices = options.linkedServices || require "./linked-services"
   interval = options.setInterval || setInterval
+  createClient = options.createJsonClient ||
+    restify.createJsonClient.bind(restify)
 
   # Create JSON clients for each linked service
   all = linkedServices.get()
   for s in all
-    s.client = restify.createJsonClient
+    s.client = createClient
       url: "http://#{s.host}:#{s.port}"
 
   # Retrieve all services /about every 10 seconds

@@ -33,5 +33,12 @@ class Server
           @res.send data
         callback? @res
 
+class JsonClient
+  constructor: (options) ->
+
+  get: () ->
+    throw new Error('NotImplemented')
+
 module.exports =
   createServer: -> new Server
+  createJsonClient: (options) -> new JsonClient()
