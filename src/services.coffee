@@ -17,8 +17,8 @@ initialize = (options) ->
       url: "http://#{s.host}:#{s.port}"
 
   # Retrieve all services /about every 10 seconds
-  readAllAbout
-  interval readAllAbout, 1000
+  readAllAbout()
+  interval readAllAbout, 10e3
 
 # Retrieve a service's /about
 readAbout = (s) ->
