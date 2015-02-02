@@ -22,7 +22,7 @@ initialize = (options) ->
 
 # Retrieve a service's /about
 readAbout = (s) ->
-  d0 = +new Date
+  d0 = Date.now()
   s.client.get "/about", (err, req, res, obj) ->
     if err
       log.error err
@@ -34,7 +34,7 @@ readAbout = (s) ->
     s.type = obj.type
     majorVersion = obj.version.split(".")[0]
     s.prefix = obj.type + "/v" + majorVersion
-    s.pingEndDate = (+new Date)
+    s.pingEndDate = Date.now()
     s.pingMs = s.pingEndDate - d0
 
 readAllAbout = ->
