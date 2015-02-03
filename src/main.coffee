@@ -2,6 +2,7 @@ log = require "./log"
 pingApi = require "./ping-api"
 registryApi = require "./registry-api"
 proxy = require "./proxy"
+services = require "./services"
 
 addRoutes = (prefix, server) ->
   log.info "adding routes"
@@ -13,6 +14,7 @@ addRoutes = (prefix, server) ->
 
 initialize = (callback) ->
   log.info "initializing backend"
+  services.initialize()
   callback?()
 
 destroy = ->
