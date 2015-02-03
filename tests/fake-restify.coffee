@@ -45,11 +45,11 @@ class JsonClient
       'headers', 'log', 'retry', 'signRequest', 'userAgent', 'version']
     # If we find some that are not supported inside @options, throw an error.
     for key in Object.keys(options)
-      if unsupportedOptions.indexOf(key)
+      if -1 != unsupportedOptions.indexOf(key)
         throw new Error('NotImplemented')
 
     this.baseUrl = options.url
-    if not url
+    if not this.baseUrl
       throw new Error('NotImplemented')
 
     # Mocks
@@ -59,32 +59,15 @@ class JsonClient
     # Callback must have same logic as restify's:
     # function(err, req, res, obj) {...}
     #
+    # this.mocks = {}
     # this.mocks[METHOD][path] = function (payload, callback)
     # this.mocks[METHOD][path] = 'body' or {} or anything really
-    this._mocks = {
-      get: {}
-    }
-
-  # Appends mock
-  #
-  # fn could be either function or
-  #
-  # new JsonClient().mock('get', '/status', function (payload, cb) {
-  #   return cb(null, {}, {}, {ok: true});
-  # });
-  mock: (method, path, fn) ->
-    method = method.toLowerCase().trim()
-
-    if !this.mocks.hasOwnProperty(method)
-      throw new Error('MethodNotSupported')
-
-    this.mocks[method][path] = fn
 
   _mockRespond: (method, path, payload, callback) ->
     if !this.mocks.hasOwnProperty(method)
       throw new Error('MethodNotSupported')
 
-    if !this.mocks.get.hasOwnProperty(path)
+    if !this.mocks[method].hasOwnProperty(path)
       throw new Error('PathNotSupportedByMethod')
 
     if arguments.length == 3
@@ -92,7 +75,7 @@ class JsonClient
       payload = null
 
     mock = this.mocks[method][path]
-    reply (err, req, res, data) ->
+    reply = (err, req, res, data) ->
       process.nextTick callback.bind(this, err, req, res, data)
 
     if mock instanceof Function
@@ -110,4 +93,8 @@ class JsonClient
 
 module.exports =
   createServer: -> new Server
-  createJsonClient: (options) -> new JsonClient(options)
+  createJsonClientFn: (mocks) ->
+    return (options) ->
+      client = new JsonClient(options)
+      client.mocks = mocks
+      return client

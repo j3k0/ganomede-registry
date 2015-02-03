@@ -3,9 +3,9 @@
 # dont create fakeService at all and replace http client inside services.coffee?
 # test multiple services?
 
-http = require 'http'
 assert = require 'assert'
 services = require '../src/services'
+fakeRestify = require './fake-restify'
 
 delay = (ms, fn) -> setTimeout(fn, ms)
 interval = (ms, fn) -> setInterval(fn, ms)
@@ -23,20 +23,14 @@ fakeResponse =
   version: '1.0.1'
   startDate: new Date()
 
-fakeJson = JSON.stringify(fakeResponse)
-
 nrequests = 0
 readAllRan = false
 
-fakeService = http.createServer (req, res) ->
-  reply = (status, body) ->
-    res.writeHead(status, {'Content-Type': 'application/json'})
-    res.write(body) if body
-    res.end()
-
-  ++nrequests
-  good = req.method == 'GET' && '/about' == req.url
-  if good then reply(200, fakeJson) else reply(400)
+mocks =
+  get:
+    '/about': (callback) ->
+      ++nrequests
+      callback(null, {}, {}, fakeResponse)
 
 spyingSetInterval = (fn, ms) ->
   call = () ->
@@ -47,14 +41,12 @@ spyingSetInterval = (fn, ms) ->
   setTimeout(call, 5)
 
 describe  "services", () ->
-  before (done) ->
-    fakeService.listen PORT, HOST, ->
-      services.initialize
-        setInterval: spyingSetInterval
-        linkedServices:
-          get: () -> serviceList
-
-      done()
+  before () ->
+    services.initialize
+      setInterval: spyingSetInterval
+      createJsonClient: fakeRestify.createJsonClientFn(mocks)
+      linkedServices:
+        get: () -> serviceList
 
   it "should retrieve GET service info from /about path", (done) ->
     # TODO:
