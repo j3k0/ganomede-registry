@@ -81,7 +81,9 @@ class JsonClient
     # TODO:
     # what is `this` bound to for restify-client callbacks?
     if mock instanceof Function
-      if mock.length == 1 then mock(reply) else mock(payload, reply)
+      # Bound mock() function to cient, so it can distinguish between them.
+      args = if mock.length == 1 then [reply] else [payload, reply]
+      mock.apply(this, args)
     else
       reply(null, {}, {}, mock)
 

@@ -4,19 +4,21 @@
 # test multiple services?
 
 assert = require 'assert'
+restify = require 'restify'
 services = require '../src/services'
 fakeRestify = require './fake-restify'
 
 delay = (ms, fn) -> setTimeout(fn, ms)
 interval = (ms, fn) -> setInterval(fn, ms)
+toInt = (val, base=10) -> parseInt(val, base)
 
 HOST = 'localhost'
 PORT = 1337
-SIMULATED_PING = 50
+SIMULATED_PING = 20
 
 serviceList = [
-  host: HOST
-  port: PORT,
+  {host: HOST, port: PORT},
+  {host: HOST, port: PORT + 1}
 ]
 
 fakeResponse =
@@ -29,7 +31,13 @@ readAllRan = false
 
 mocks =
   get:
+    # this is bound to fake client
     '/about': (callback) ->
+      # dead service (PORT)
+      if PORT == toInt this.baseUrl.slice(this.baseUrl.lastIndexOf(':') + 1)
+        return callback(new restify.errors.InternalServerError(), {}, {})
+
+      # ok service (PORT + 1)
       delay SIMULATED_PING, () ->
         ++nrequests
         callback(null, {}, {}, fakeResponse)
@@ -43,14 +51,13 @@ spyingSetInterval = (fn, ms) ->
   setTimeout(call, 5)
 
 describe  "services", () ->
-  before () ->
+  before (done) ->
     services.initialize
       setInterval: spyingSetInterval
       createJsonClient: fakeRestify.createJsonClientFn(mocks)
       linkedServices:
         get: () -> serviceList
 
-  it "should retrieve GET service info from /about path", (done) ->
     # TODO:
     # fix this waiting thing.
 
@@ -59,16 +66,18 @@ describe  "services", () ->
     ival = interval 10, ->
       if nrequests == 2 && readAllRan
         clearInterval(ival)
-        test()
+        done()
 
-    test = ->
-      assert.equal services.forPrefix('fake/v1').length, 1
-      assert.equal services.all().length, 1
+  it "should not include dead services to output", () ->
+    assert.equal services.all().length, 1
 
-      service = services.all()[0]
-      assert.ok service.hasOwnProperty('pingMs')
-      assert.ok service.pingMs >= SIMULATED_PING
-      for val, key in fakeResponse
-        assert.equal val service[key]
+  it "should retrieve GET service info from /about path", () ->
+    list = services.forPrefix('fake/v1')
+    service = list[0]
 
-      done()
+    assert.equal list.length, 1
+    assert.ok service.hasOwnProperty('pingMs')
+    assert.ok service.pingMs >= SIMULATED_PING
+    for val, key in fakeResponse
+      assert.equal val, service[key]
+
