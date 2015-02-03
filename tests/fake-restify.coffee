@@ -50,7 +50,7 @@ class JsonClient
 
     this.baseUrl = options.url
     if not this.baseUrl
-      throw new Error('NotImplemented')
+      throw new Error('RequiredOptionOmitted')
 
     # Mocks
     # Collection of METHOD and pathes, could include function
@@ -76,10 +76,10 @@ class JsonClient
 
     mock = this.mocks[method][path]
     reply = (err, req, res, data) ->
-      process.nextTick callback.bind(this, err, req, res, data)
+      # TODO:
+      # what is `this` bound to inside restify-client callbacks?
+      process.nextTick callback.bind(null, err, req, res, data)
 
-    # TODO:
-    # what is `this` bound to for restify-client callbacks?
     if mock instanceof Function
       # Bound mock() function to cient, so it can distinguish between them.
       args = if mock.length == 1 then [reply] else [payload, reply]
