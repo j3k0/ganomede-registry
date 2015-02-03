@@ -12,6 +12,7 @@ interval = (ms, fn) -> setInterval(fn, ms)
 
 HOST = 'localhost'
 PORT = 1337
+SIMULATED_PING = 50
 
 serviceList = [
   host: HOST
@@ -29,8 +30,9 @@ readAllRan = false
 mocks =
   get:
     '/about': (callback) ->
-      ++nrequests
-      callback(null, {}, {}, fakeResponse)
+      delay SIMULATED_PING, () ->
+        ++nrequests
+        callback(null, {}, {}, fakeResponse)
 
 spyingSetInterval = (fn, ms) ->
   call = () ->
@@ -65,7 +67,7 @@ describe  "services", () ->
 
       service = services.all()[0]
       assert.ok service.hasOwnProperty('pingMs')
-      assert.ok service.pingMs >= 0
+      assert.ok service.pingMs >= SIMULATED_PING
       for val, key in fakeResponse
         assert.equal val service[key]
 

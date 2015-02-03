@@ -78,6 +78,8 @@ class JsonClient
     reply = (err, req, res, data) ->
       process.nextTick callback.bind(this, err, req, res, data)
 
+    # TODO:
+    # what is `this` bound to for restify-client callbacks?
     if mock instanceof Function
       if mock.length == 1 then mock(reply) else mock(payload, reply)
     else
