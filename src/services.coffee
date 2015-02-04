@@ -1,24 +1,23 @@
 restify = require "restify"
 log = require "./log"
 
-linkedServices = null # custom service finder
-interval = null # custom setInterval
-all = [] # linkedServices.get()
+services = null
+createClient = null
 
-initialize = (options) ->
-  options = options || {}
-  linkedServices = options.linkedServices || require "./linked-services"
+# Create JSON clients for each linked service
+ensureClients = () ->
+  for s in services
+    s.client = s.client || createClient
+      url: "http://#{s.host}:#{s.port}"
+
+initialize = (options={}) ->
+  services = options.discoveredServices || []
   interval = options.setInterval || setInterval
   createClient = options.createJsonClient ||
     restify.createJsonClient.bind(restify)
 
-  # Create JSON clients for each linked service
-  all = linkedServices.get()
-  for s in all
-    s.client = createClient
-      url: "http://#{s.host}:#{s.port}"
-
   # Retrieve all services /about every 10 seconds
+  ensureClients()
   readAllAbout()
   interval readAllAbout, 10e3
 
@@ -40,13 +39,15 @@ readAbout = (s) ->
     s.pingMs = s.pingEndDate - d0
 
 readAllAbout = ->
-  for s in linkedServices.get()
+  for s in services
     readAbout s
 
 module.exports =
   initialize: initialize
-  all: -> s for s in all when s.type
-  forPrefix: (prefix) -> s for s in all when s.prefix == prefix
-  push: (x) -> all.push x
+  all: -> s for s in services when s.type
+  forPrefix: (prefix) -> s for s in services when s.prefix == prefix
+  push: (x) ->
+    services.push(x)
+    ensureClients()
 
 # vim: ts=2:sw=2:et:
