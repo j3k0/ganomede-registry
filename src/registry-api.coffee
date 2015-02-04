@@ -1,45 +1,34 @@
 log = require "./log"
+config = require '../config'
 restify = require "restify"
 
-services = require "./services"
-
-sendError = (err, next) ->
-  log.error err
-  next err
+services = null
 
 get = (req, res, next) ->
-  now = +(new Date)
+  # only includes services that was pinged within last diff milliseconds.
+  diff = Date.now() - config.pingInterval
   res.send ((
     type: s.type
     version: s.version
     host: s.host
     port: s.port
-    pingMs: s.pingMs) for s in services.all() when s.pingEndDate > now - 10000)
+    pingMs: s.pingMs) for s in services.all() when s.pingEndDate > diff)
   next()
 
 post = (req, res, next) ->
+  bodyOk = req.body && req.body.type && req.body.version && req.body.host &&
+    req.body.port && req.body.pingURI
+
+  if !bodyOk
+    err = new restify.InvalidContentError('invalid service data')
+    log.error(err)
+    return next(err)
+
   s = req.body
-  if !s
-    err = new restify.InvalidContentError "invalid service data"
-    return sendError err, next
-  if !s.type
-    err = new restify.InvalidContentError "invalid service data"
-    return sendError err, next
-  if !s.version
-    err = new restify.InvalidContentError "invalid service data"
-    return sendError err, next
-  if !s.host
-    err = new restify.InvalidContentError "invalid service data"
-    return sendError err, next
-  if !s.port
-    err = new restify.InvalidContentError "invalid service data"
-    return sendError err, next
-  if !s.pingURI
-    err = new restify.InvalidContentError "invalid service data"
-    return sendError err, next
   existing = (
     x for x in services.all() when (
       s.host == x.host and s.port == x.port))
+
   if existing.length > 0
     log.info "service updated", s
     existing[0].type = s.type
@@ -59,14 +48,22 @@ post = (req, res, next) ->
       pingMs: -1
       pingStartDate: -1
       pingEndDate: -1
+
   res.send ok:true
   next()
 
 addRoutes = (prefix, server) ->
+  if !services
+    throw new Error('NotInitialized')
+
   server.get "/#{prefix}/services", get
   server.post "/#{prefix}/services", post
 
+initialize = (options={}) ->
+  services = options.services || require('./services')
+
 module.exports =
+  initialize: initialize
   addRoutes: addRoutes
 
 # vim: ts=2:sw=2:et:
