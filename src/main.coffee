@@ -3,7 +3,7 @@ pingApi = require "./ping-api"
 registryApi = require "./registry-api"
 proxy = require "./proxy"
 services = require "./services"
-findLinkedServices = require './linked-services'
+findLinkedServices = require './find-linked-services'
 
 addRoutes = (prefix, server) ->
   log.info "adding routes"

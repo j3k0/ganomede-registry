@@ -2,7 +2,7 @@ assert = require "assert"
 main = require "../src/main"
 
 # linked services
-linkedServices = require "../src/linked-services"
+findLinkedServices = require "../src/find-linked-services"
 
 describe "findLinkedServices", ->
   it "should find a list of host from env", () ->
@@ -15,7 +15,7 @@ describe "findLinkedServices", ->
       SERVICE_1_PORT: "tcp://4.3.2.1:5"
       NO_SERVICE_1_PORT: "x"
 
-    services = linkedServices env
+    services = findLinkedServices env
     assert.equal 2, services.length
     assert.equal "1.2.3.4", services[0].host
     assert.equal 5000, services[0].port
