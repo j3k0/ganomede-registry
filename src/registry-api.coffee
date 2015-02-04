@@ -3,17 +3,6 @@ restify = require "restify"
 
 services = null
 
-validateBody = (req, res, next) ->
-  ok = req.body && req.body.type && req.body.version && req.body.host &&
-    req.body.port && req.body.pingURI
-
-  if !ok
-    err = new restify.InvalidContentError('invalid service data')
-    log.error(err)
-    return next(err)
-
-  next()
-
 get = (req, res, next) ->
   # only includes services that was pinged within last diff milliseconds.
   diff = Date.now() - 10e3
@@ -26,6 +15,14 @@ get = (req, res, next) ->
   next()
 
 post = (req, res, next) ->
+  bodyOk = req.body && req.body.type && req.body.version && req.body.host &&
+    req.body.port && req.body.pingURI
+
+  if !bodyOk
+    err = new restify.InvalidContentError('invalid service data')
+    log.error(err)
+    return next(err)
+
   s = req.body
   existing = (
     x for x in services.all() when (
@@ -59,7 +56,7 @@ addRoutes = (prefix, server) ->
     throw new Error('NotInitialized')
 
   server.get "/#{prefix}/services", get
-  server.post "/#{prefix}/services", validateBody, post
+  server.post "/#{prefix}/services", post
 
 initialize = (options={}) ->
   services = options.services || require('./services')
