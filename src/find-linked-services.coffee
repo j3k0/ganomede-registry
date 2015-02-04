@@ -1,5 +1,3 @@
-linkedServices = []
-
 findLinkedServices = (env) ->
   linkedServices = []
   added = {}
@@ -21,12 +19,6 @@ findLinkedServices = (env) ->
         added[value] = true
   linkedServices
 
-linkedServices = findLinkedServices process.env
-
-module.exports =
-  get: -> linkedServices
-
-  # exported for testing
-  findLinkedServices: findLinkedServices
+module.exports = findLinkedServices
 
 # vim: ts=2:sw=2:et:

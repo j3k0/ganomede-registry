@@ -3,6 +3,7 @@ pingApi = require "./ping-api"
 registryApi = require "./registry-api"
 proxy = require "./proxy"
 services = require "./services"
+findLinkedServices = require './find-linked-services'
 
 addRoutes = (prefix, server) ->
   log.info "adding routes"
@@ -14,7 +15,8 @@ addRoutes = (prefix, server) ->
 
 initialize = (callback) ->
   log.info "initializing backend"
-  services.initialize()
+  services.initialize
+    discoveredServices: findLinkedServices(process.env)
   callback?()
 
 destroy = ->

@@ -1,8 +1,3 @@
-# TODO:
-# move out fakeService to separate module
-# dont create fakeService at all and replace http client inside services.coffee?
-# test multiple services?
-
 assert = require 'assert'
 restify = require 'restify'
 services = require '../src/services'
@@ -55,8 +50,7 @@ describe  "services", () ->
     services.initialize
       setInterval: spyingSetInterval
       createJsonClient: fakeRestify.createJsonClientFn(mocks)
-      linkedServices:
-        get: () -> serviceList
+      discoveredServices: serviceList
 
     # TODO:
     # fix this waiting thing.
@@ -81,3 +75,13 @@ describe  "services", () ->
     for val, key in fakeResponse
       assert.equal val, service[key]
 
+  # TODO:
+  # this is dependant on order (checking services.all() length in earlier tests)
+  # so it will possibly break in the future.
+  # Look into this before adding new tests!
+  it "should create API Client for newly added service", () ->
+    a = {host: 'localhost', port: PORT + 2}
+    services.push(a)
+
+    assert.ok a.client
+    assert.ok a.client instanceof Object
