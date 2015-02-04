@@ -1,11 +1,12 @@
 log = require "./log"
+config = require '../config'
 restify = require "restify"
 
 services = null
 
 get = (req, res, next) ->
   # only includes services that was pinged within last diff milliseconds.
-  diff = Date.now() - 10e3
+  diff = Date.now() - config.pingInterval
   res.send ((
     type: s.type
     version: s.version

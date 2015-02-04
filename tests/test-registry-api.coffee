@@ -7,6 +7,8 @@ fakeRestify = require "./fake-restify"
 server = fakeRestify.createServer()
 endpointPath = "/#{config.routePrefix}/services"
 
+PING_INTERVAL = 1e3
+
 services = []
 
 newService = () ->
@@ -19,7 +21,7 @@ newService = () ->
     pingURI: 'whatever'
   }
 
-fakePing = (obj, ping=50, lastRun=2e3) ->
+fakePing = (obj, ping=50, lastRun=PING_INTERVAL/2) ->
   now = Date.now()
   obj.pingStartDate = now - lastRun - ping
   obj.pingEndDate = now - lastRun
@@ -66,7 +68,7 @@ describe 'registry-api', () ->
     assert.ok server.routes.get[endpointPath]
     assert.ok server.routes.post[endpointPath]
 
-  it 'GET for array of services that was pinged within last 10 seconds', () ->
+  it 'GET for array of services that was pinged within last X seconds', () ->
     # add, ping, retrieve
     s = newService()
     addService(s)
@@ -80,7 +82,7 @@ describe 'registry-api', () ->
     s2 = newService()
     addService(s2)
     assert.equal listServices().length, 1 # not pinged
-    fakePing(services[1], 50, 15e3) # was pinged too long time ago
+    fakePing(services[1], 50, 2 * PING_INTERVAL) # was pinged too long time ago
     assert.ok servicesEqual([s, s2], services) # s2 is in services...
     delete s2.pingURI
     assert.ok servicesEqual([s], listServices()) # ...but not in /GET result
