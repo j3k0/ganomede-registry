@@ -19,6 +19,13 @@ newService = () ->
     pingURI: 'whatever'
   }
 
+fakePing = (obj, ping=50, lastRun=2e3) ->
+  now = Date.now()
+  obj.pingStartDate = now - lastRun - ping
+  obj.pingEndDate = now - lastRun
+  obj.pingMs = ping
+
+# @left and @right matters, since only keys of @left are checked
 servicesEqual = (left, right) ->
   if left == right
     return true
@@ -60,12 +67,6 @@ describe 'registry-api', () ->
     assert.ok server.routes.post[endpointPath]
 
   it 'GET for array of services that was pinged within last 10 seconds', () ->
-    fakePing = (obj, ping=50, lastRun=2e3) ->
-      now = Date.now()
-      obj.pingStartDate = now - lastRun - ping
-      obj.pingEndDate = now - lastRun
-      obj.pingMs = ping
-
     # add, ping, retrieve
     s = newService()
     addService(s)
@@ -83,7 +84,6 @@ describe 'registry-api', () ->
     assert.ok servicesEqual([s, s2], services) # s2 is in services...
     delete s2.pingURI
     assert.ok servicesEqual([s], listServices()) # ...but not in /GET result
-
 
   it 'POST adds new valid services to the list', () ->
     validServices = [newService(), newService(), newService()]
@@ -103,3 +103,30 @@ describe 'registry-api', () ->
 
     # no bad services should be added
     assert.equal services.length, validServices.length
+
+  it 'POST updates existing services', () ->
+    # add new service
+    s = newService()
+    addService(s)
+    fakePing(services[0])
+    assert.equal listServices().length, 1
+
+    # just make sure that we are not using the same object by reference
+    # due to all mocking/faking buisness
+    innerS = services[0]
+    assert.notStrictEqual s, innerS
+
+    # update it, expect it to be not pinged because of it
+    oldType = s.type
+    s.type = 'newtype'
+    addService(s)
+    assert.ok innerS.pingMs == innerS.pingStartDate == innerS.pingEndDate == -1
+    assert.equal listServices().length, 0
+
+    # no new services must show up
+    assert.equal services.length, 1
+    assert.strictEqual innerS, services[0]
+
+    # fake ping and expect it to show up
+    fakePing(innerS)
+    assert.ok servicesEqual(listServices(), [innerS])
