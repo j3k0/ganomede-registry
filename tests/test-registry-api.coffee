@@ -60,15 +60,30 @@ describe 'registry-api', () ->
     assert.ok server.routes.post[endpointPath]
 
   it 'GET for array of services that was pinged within last 10 seconds', () ->
+    fakePing = (obj, ping=50, lastRun=2e3) ->
+      now = Date.now()
+      obj.pingStartDate = now - lastRun - ping
+      obj.pingEndDate = now - lastRun
+      obj.pingMs = ping
+
+    # add, ping, retrieve
     s = newService()
     addService(s)
     assert.equal listServices().length, 0 # not pinged yet, so shouldn't show up
-    services[0].pingStartDate = Date.now() - 250 # fake pinging
-    services[0].pingEndDate = Date.now() - 200
-    services[0].pingMs = 50
+    fakePing(services[0]) # fake ping
     assert.ok servicesEqual([s], services) # should show up
     delete s.pingURI # this isn't included in GET results
     assert.ok servicesEqual([s], listServices())
+
+    # add, ping but too long time ago, retrieve
+    s2 = newService()
+    addService(s2)
+    assert.equal listServices().length, 1 # not pinged
+    fakePing(services[1], 50, 15e3) # was pinged too long time ago
+    assert.ok servicesEqual([s, s2], services) # s2 is in services...
+    delete s2.pingURI
+    assert.ok servicesEqual([s], listServices()) # ...but not in /GET result
+
 
   it 'POST adds new valid services to the list', () ->
     validServices = [newService(), newService(), newService()]
