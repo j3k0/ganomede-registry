@@ -66,7 +66,11 @@ addRoutes = (prefix, server) ->
   server.get "/#{prefix}/services", get
   server.post "/#{prefix}/services", post
 
+initialize = (servicesList) ->
+  services = servicesList || require('./services')
+
 module.exports =
+  initialize: initialize
   addRoutes: addRoutes
 
 # vim: ts=2:sw=2:et:
