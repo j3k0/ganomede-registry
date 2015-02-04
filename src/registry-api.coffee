@@ -61,8 +61,8 @@ addRoutes = (prefix, server) ->
   server.get "/#{prefix}/services", get
   server.post "/#{prefix}/services", validateBody, post
 
-initialize = (servicesList) ->
-  services = servicesList || require('./services')
+initialize = (options={}) ->
+  services = options.services || require('./services')
 
 module.exports =
   initialize: initialize

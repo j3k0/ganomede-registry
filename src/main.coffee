@@ -15,6 +15,7 @@ addRoutes = (prefix, server) ->
 
 initialize = (callback) ->
   log.info "initializing backend"
+  registryApi.initialize()
   services.initialize
     discoveredServices: findLinkedServices(process.env)
   callback?()

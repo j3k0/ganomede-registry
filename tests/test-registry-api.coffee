@@ -6,8 +6,15 @@ fakeRestify = require "./fake-restify"
 server = fakeRestify.createServer()
 endpointPath = "/#{config.routePrefix}/services"
 
+services = []
+
 describe 'registry-api', () ->
   before () ->
+    registryApi.initialize
+      services:
+        all: -> services
+        push: [].push.bind(services)
+
     registryApi.addRoutes(config.routePrefix, server)
 
   it 'should have GET and POST endpoints of format /`prefix`/services', () ->
