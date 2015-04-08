@@ -4,6 +4,16 @@ services = require "./services"
 url = require "url"
 config = require "../config"
 
+crossdomain_xml = '<?xml version="1.0"?>
+<!DOCTYPE cross-domain-policy
+  SYSTEM "http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
+<cross-domain-policy>
+  <site-control permitted-cross-domain-policies="all"/>
+  <allow-access-from domain="*" secure="false"/>
+  <allow-http-request-headers-from domain="*" headers="*" secure="false"/>
+</cross-domain-policy>
+'
+
 createServer = ->
 
   server = bouncy (req, res, bounce) ->
@@ -24,6 +34,11 @@ createServer = ->
           headers:
             Connection: "close"
         return
+    if uri == '/crossdomain.xml'
+      res.statusCode = 200
+      res.setHeader("Content-Type", "application/xml")
+      res.write crossdomain_xml
+      res.end()
     res.statusCode = 404
     res.end "no such service found"
 
