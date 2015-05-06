@@ -24,7 +24,10 @@ createServer = ->
       serviceType = uriArray[1] + "/" + uriArray[2]
       service = services.forPrefix serviceType
       if service and service.length > 0
-        s = service[Math.floor(Math.random() * service.length)]
+        if service.length == 1
+          s = service[0]
+        else
+          s = service[Math.floor(Math.random() * service.length)]
         bounce s.host, s.port,
           headers:
             Connection: "close"
