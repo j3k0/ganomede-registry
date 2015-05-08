@@ -19,6 +19,7 @@ createServer = ->
   server = bouncy (req, res, bounce) ->
 
     uri = url.parse(req.url).pathname
+    reqlog = log.child url:req.url
     uriArray = uri.split "/"
     if uriArray.length > 2
       serviceType = uriArray[1] + "/" + uriArray[2]
@@ -28,20 +29,24 @@ createServer = ->
           s = service[0]
         else
           s = service[Math.floor(Math.random() * service.length)]
+        reqlog.info "bouncing to " + s.host + ":" + s.port
         bounce s.host, s.port,
           headers:
             Connection: "close"
         return
       if serviceType == config.routePrefix
+        reqlog.info "bouncing to local port " + config.port
         bounce config.port,
           headers:
             Connection: "close"
         return
     if uri == '/crossdomain.xml'
+      reqlog.info "delivering crossdomain.xml"
       res.statusCode = 200
       res.setHeader("Content-Type", "application/xml")
       res.write crossdomain_xml
       res.end()
+    reqlog.warn "404"
     res.statusCode = 404
     res.end "no such service found"
 
