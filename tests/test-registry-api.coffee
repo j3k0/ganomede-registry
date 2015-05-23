@@ -19,6 +19,7 @@ newService = () ->
     host: 'localhost'
     port: 1000 + newService.counter
     pingURI: 'whatever'
+    config: null
   }
 
 fakePing = (obj, ping=50, lastRun=PING_INTERVAL/2) ->

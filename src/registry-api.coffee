@@ -10,6 +10,7 @@ get = (req, res, next) ->
   res.send ((
     type: s.type
     version: s.version
+    config: s.config || null
     host: s.host
     port: s.port
     pingMs: s.pingMs) for s in services.all() when s.pingEndDate > diff)
@@ -33,6 +34,7 @@ post = (req, res, next) ->
     log.info "service updated", s
     existing[0].type = s.type
     existing[0].version = s.version
+    existing[0].config = s.config
     existing[0].pingURI = s.pingURI
     existing[0].pingMs = -1
     existing[0].pingStartDate = -1
@@ -44,6 +46,7 @@ post = (req, res, next) ->
       version: s.version
       host: s.host
       port: s.port
+      config: s.config
       pingURI: s.pingURI
       pingMs: -1
       pingStartDate: -1

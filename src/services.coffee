@@ -39,6 +39,7 @@ readAbout = (s) ->
       return
     s.version = obj.version
     s.type = obj.type
+    s.config = obj.config
     majorVersion = obj.version.split(".")[0]
     s.prefix = obj.type + "/v" + majorVersion
     s.pingEndDate = Date.now()
