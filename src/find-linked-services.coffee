@@ -2,7 +2,7 @@ findLinkedServices = (env) ->
   linkedServices = []
   added = {}
   for name,value of env
-    match = name.match /^SERVICE_.*_PORT$/
+    match = name.match /^.*_PORT$/
     if match and match.index == 0 and not added[value]
       a = value.split "/"
       if a.length > 2
