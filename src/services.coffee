@@ -9,6 +9,8 @@ pingInterval = null
 # Create JSON clients for each linked service
 ensureClients = () ->
   for s in services
+    log.info "createClient",
+      url: "http://#{s.host}:#{s.port}"
     s.client = s.client || createClient
       url: "http://#{s.host}:#{s.port}"
 
@@ -24,18 +26,33 @@ initialize = (options={}) ->
   readAllAbout()
   interval readAllAbout, pingInterval
 
+# Disable ping for 10 seconds
+disable = (s) ->
+  s.client = null
+  setTimeout ->
+    s.client = s.client || createClient
+      url: "http://#{s.host}:#{s.port}"
+  , 10000
+
 # Retrieve a service's /about
 readAbout = (s) ->
   if !services
     throw new Error('NotInitialized')
 
+  # Skip
+  if !s.client
+    return
+
   d0 = Date.now()
   s.client.get "/about", (err, req, res, obj) ->
     if err
-      log.error err
+      log.error err,
+        host:s.host
+        port:s.port
       s.type = null
       s.pingMs = -1
       s.pingEndDate = -1
+      disable s
       return
     s.version = obj.version
     s.type = obj.type
