@@ -16,6 +16,18 @@ get = (req, res, next) ->
     pingMs: s.pingMs) for s in services.all() when s.pingEndDate > diff)
   next()
 
+# Check the API secret key validity
+apiSecretMiddleware = (req, res, next) ->
+  secret = req.body?.secret
+  if !secret
+    return sendError(new restify.InvalidContentError('invalid content'), next)
+  if secret != process.env.API_SECRET
+    return sendError(new restify.UnauthorizedError('not authorized'), next)
+
+  # Make sure secret isn't sent in clear to the users
+  delete req.body.secret
+  next()
+
 post = (req, res, next) ->
   bodyOk = req.body && req.body.type && req.body.version && req.body.host &&
     req.body.port && req.body.pingURI
@@ -60,7 +72,8 @@ addRoutes = (prefix, server) ->
     throw new Error('NotInitialized')
 
   server.get "/#{prefix}/services", get
-  server.post "/#{prefix}/services", post
+  server.post "/#{prefix}/services",
+    apiSecretMiddleware, post
 
 initialize = (options={}) ->
   services = options.services || require('./services')

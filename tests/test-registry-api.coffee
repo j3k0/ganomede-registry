@@ -43,8 +43,18 @@ servicesEqual = (left, right) ->
 
   return true
 
+process.env.API_SECRET = "abcd1234"
+
 addService = (s) ->
-  server.request 'post', endpointPath, {body: s}
+  server.request 'post', endpointPath,
+    body:
+      secret: process.env.API_SECRET
+      type: s.type
+      version: s.version
+      config: s.config
+      host: s.host
+      port: s.port
+      pintURI: s.pingURI
   return server.res.body
 
 listServices = () ->
@@ -73,7 +83,8 @@ describe 'registry-api', () ->
     # add, ping, retrieve
     s = newService()
     addService(s)
-    assert.equal listServices().length, 0 # not pinged yet, so shouldn't show up
+    assert.equal 1, services.length
+    assert.equal 0, listServices().length # not pinged yet, so shouldn't show up
     fakePing(services[0]) # fake ping
     assert.ok servicesEqual([s], services) # should show up
     delete s.pingURI # this isn't included in GET results

@@ -25,4 +25,7 @@ RUN chown -R app /home/app
 WORKDIR /home/app/code
 USER app
 RUN make
+
+ENV API_SECRET=abcd
+
 CMD node_modules/.bin/forever index.js
