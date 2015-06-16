@@ -5,8 +5,8 @@ restify = require "restify"
 services = null
 
 get = (req, res, next) ->
-  # only includes services that was pinged within last diff milliseconds.
-  diff = Date.now() - config.pingInterval
+  # only includes services that was pinged within last 10 seconds.
+  diff = Date.now() - 10000 # config.pingInterval
   res.send ((
     type: s.type
     version: s.version
