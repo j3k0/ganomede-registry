@@ -29,19 +29,19 @@ createServer = ->
           s = service[0]
         else
           s = service[Math.floor(Math.random() * service.length)]
-        reqlog.info "bouncing to " + s.host + ":" + s.port
+        # reqlog.debug "bouncing to " + s.host + ":" + s.port
         bounce s.host, s.port,
           headers:
             Connection: "close"
         return
       if serviceType == config.routePrefix
-        reqlog.info "bouncing to local port " + config.port
+        # reqlog.info "bouncing to local port " + config.port
         bounce config.port,
           headers:
             Connection: "close"
         return
     if uri == '/crossdomain.xml'
-      reqlog.info "delivering crossdomain.xml"
+      # reqlog.info "delivering crossdomain.xml"
       res.statusCode = 200
       res.setHeader("Content-Type", "application/xml")
       res.write crossdomain_xml
