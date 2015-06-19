@@ -7,6 +7,8 @@ services = null
 get = (req, res, next) ->
   # only includes services that was pinged within last 10 seconds.
   diff = Date.now() - 10000 # config.pingInterval
+  # Can be cached for 10 seconds (by CDN)
+  res.header 'Cache-Control', 'public, max-age=10'
   res.send ((
     type: s.type
     version: s.version
