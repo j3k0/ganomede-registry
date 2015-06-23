@@ -49,14 +49,18 @@ readAbout = (s) ->
       log.error err,
         host:s.host
         port:s.port
+      # If a service can't be found, it means there's a connection
+      # issue between this registry and the linked service.
+      # Better shut this registry off.
+      throw new Error(err)
       # Do not disable for the outside... Let be optimistic!
       # ! single failed request shouldn't fully disable the
       # service. Maybe it was just a single failed request.
       #s.type = null
       #s.pingMs = -1
       #s.pingEndDate = -1
-      disable s
-      return
+      # disable s
+      # return
     s.version = obj.version
     s.type = obj.type
     s.config = obj.config
