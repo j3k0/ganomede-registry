@@ -26,6 +26,8 @@ WORKDIR /home/app/code
 USER app
 RUN make
 
-ENV API_SECRET=abcd
+ENV API_SECRET=abcd \
+    PING_INTERVAL=5000
+# Ping interval in ms
 
 CMD node_modules/.bin/forever index.js

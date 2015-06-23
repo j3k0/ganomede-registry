@@ -49,9 +49,12 @@ readAbout = (s) ->
       log.error err,
         host:s.host
         port:s.port
-      s.type = null
-      s.pingMs = -1
-      s.pingEndDate = -1
+      # Do not disable for the outside... Let be optimistic!
+      # ! single failed request shouldn't fully disable the
+      # service. Maybe it was just a single failed request.
+      #s.type = null
+      #s.pingMs = -1
+      #s.pingEndDate = -1
       disable s
       return
     s.version = obj.version

@@ -40,12 +40,22 @@ createServer = ->
           headers:
             Connection: "close"
         return
+
     if uri == '/crossdomain.xml'
       # reqlog.info "delivering crossdomain.xml"
       res.statusCode = 200
       res.setHeader("Content-Type", "application/xml")
       res.write crossdomain_xml
       res.end()
+      return
+
+    if uri == '/'
+      res.statusCode = 200
+      res.setHeader("Content-Type", "text/plain")
+      res.write 'OK'
+      res.end()
+      return
+
     reqlog.warn "404"
     res.statusCode = 404
     res.end "no such service found"

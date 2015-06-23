@@ -8,7 +8,7 @@ interval = (ms, fn) -> setInterval(fn, ms)
 toInt = (val, base=10) -> parseInt(val, base)
 
 HOST = 'localhost'
-PORT = 1337
+PORT = 1437
 SIMULATED_PING = 20
 
 serviceList = [

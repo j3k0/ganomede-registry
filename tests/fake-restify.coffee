@@ -6,8 +6,14 @@ notImplemented = () ->
 class Res
   constructor: ->
     @status = 200
+    @headers = {}
   send: (data) ->
     @body = data
+  header: (key, value) ->
+    if typeof value != undefined
+      @headers[key] = value
+    else
+      @headers[key]
 
 class Server
   constructor: ->
