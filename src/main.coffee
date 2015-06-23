@@ -23,7 +23,19 @@ initialize = (callback) ->
 destroy = ->
   log.info "destroying backend"
 
-createProxyServer = -> proxy.createServer()
+createProxyServer = ->
+  server = null
+  return {
+    listen: (port, cb) ->
+      # Give some time for all services to be pinged
+      setTimeout ->
+        proxy.createServer()
+        server.listen port, cb
+      , 5000
+    close: ->
+      if server
+        server.close()
+  }
 
 module.exports =
   initialize: initialize

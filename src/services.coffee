@@ -51,16 +51,20 @@ readAbout = (s) ->
         port:s.port
       # If a service can't be found, it means there's a connection
       # issue between this registry and the linked service.
-      # Better shut this registry off.
-      throw new Error(err)
-      # Do not disable for the outside... Let be optimistic!
-      # ! single failed request shouldn't fully disable the
-      # service. Maybe it was just a single failed request.
-      #s.type = null
-      #s.pingMs = -1
-      #s.pingEndDate = -1
-      # disable s
-      # return
+      #
+      # Option 1: shut this registry off.
+      # throw new Error(err)
+      #
+      # Option 2: Disable for the outside
+      # s.type = null
+      # s.pingMs = -1
+      # s.pingEndDate = -1
+      disable s
+      #
+      # Option 3: Do not disable for the outside... Let be optimistic!
+      # Some failed requests shouldn't fully disable the
+      # service. Maybe it was just temporary.
+      return
     s.version = obj.version
     s.type = obj.type
     s.config = obj.config
