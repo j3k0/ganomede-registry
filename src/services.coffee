@@ -12,7 +12,7 @@ ensureClients = () ->
     log.info "createClient", s
     s.client = s.client || createClient
       retry: false
-      url: "http://#{s.host}:#{s.port}"
+      url: "#{s.protocol}://#{s.host}:#{s.port}"
 
 initialize = (options={}) ->
   services = options.discoveredServices || []
@@ -32,7 +32,7 @@ disable = (s) ->
   setTimeout ->
     s.client = s.client || createClient
       retry: false
-      url: "http://#{s.host}:#{s.port}"
+      url: "#{s.protocol}://#{s.host}:#{s.port}"
   , 30000
 
 # Retrieve a service's /about
