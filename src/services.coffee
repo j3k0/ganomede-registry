@@ -45,17 +45,17 @@ readAbout = (s) ->
     return
 
   d0 = Date.now()
-  s.client.get "#{s.path}/about", (err, req, res, obj) ->
+  s.client.get "/#{s.path}/about", (err, req, res, obj) ->
     if err
       if err.name == "ServiceUnavailableError"
         log.error
           err: "ServiceUnavailableError"
-          path: "#{s.path}/about"
+          path: "/#{s.path}/about"
           host: s.host
           port: s.port
       else
         log.error err,
-          path: "#{s.path}/about"
+          path: "/#{s.path}/about"
           host: s.host
           port: s.port
       # s.type = null
