@@ -11,6 +11,7 @@ ensureClients = () ->
   for s in services
     log.info "createClient", s
     s.client = s.client || createClient
+      retry: false
       url: "http://#{s.host}:#{s.port}"
 
 initialize = (options={}) ->
@@ -30,6 +31,7 @@ disable = (s) ->
   s.client = null
   setTimeout ->
     s.client = s.client || createClient
+      retry: false
       url: "http://#{s.host}:#{s.port}"
   , 30000
 
@@ -43,12 +45,20 @@ readAbout = (s) ->
     return
 
   d0 = Date.now()
-  s.client.get s.path + "/about", (err, req, res, obj) ->
+  s.client.get "#{s.path}/about", (err, req, res, obj) ->
     if err
-      log.error err,
-        host:s.host
-        port:s.port
-      s.type = null
+      if err.name == "ServiceUnavailableError"
+        log.error
+          err: "ServiceUnavailableError"
+          path: "#{s.path}/about"
+          host: s.host
+          port: s.port
+      else
+        log.error err,
+          path: "#{s.path}/about"
+          host: s.host
+          port: s.port
+      # s.type = null
       s.pingMs = -1
       s.pingEndDate = -1
       disable s
