@@ -4,19 +4,19 @@ findLinkedServices = (env) ->
   for name,value of env
     match = name.match /^SERVICE_.*_URL/
     if match and match.index == 0 and not added[value]
-      a = value.split "/"
-      if a.length > 4
-        hostPort = a[2]
-        a = hostPort.split ":"
-        host = a[0]
-        if a.length == 1
+      url = value.split "/"
+      if url.length > 4
+        hostPort = url[2]
+        hostPort = hostPort.split ":"
+        host = hostPort[0]
+        if hostPort.length == 1
           port = 80
         else
-          port = +a[1]
+          port = +hostPort[1]
         linkedServices.push
           host: host
           port: port
-          path: a[3] + "/" + a[4]
+          path: url[3] + "/" + url[4]
         # linkedServices.push url:value
         added[value] = true
   linkedServices
