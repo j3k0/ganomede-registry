@@ -10,7 +10,8 @@ pingInterval = null
 ensureClients = () ->
   for s in services
     log.info "createClient", s
-    s.client = s.client || createClient(s)
+    s.client = s.client || createClient
+      url: "http://#{s.host}:#{s.port}"
 
 initialize = (options={}) ->
   services = options.discoveredServices || []
@@ -28,8 +29,8 @@ initialize = (options={}) ->
 disable = (s) ->
   s.client = null
   setTimeout ->
-    s.client = s.client || createClient(s)
-    # url: s.url"http://#{s.host}:#{s.port}"
+    s.client = s.client || createClient
+      url: "http://#{s.host}:#{s.port}"
   , 30000
 
 # Retrieve a service's /about
@@ -42,7 +43,7 @@ readAbout = (s) ->
     return
 
   d0 = Date.now()
-  s.client.get "/about", (err, req, res, obj) ->
+  s.client.get s.path + "/about", (err, req, res, obj) ->
     if err
       log.error err,
         host:s.host
