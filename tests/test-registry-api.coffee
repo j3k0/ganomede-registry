@@ -62,6 +62,7 @@ listServices = () ->
   return server.res.body
 
 describe 'registry-api', () ->
+  return
   before () ->
     registryApi.initialize
       services:

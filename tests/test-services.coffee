@@ -46,6 +46,7 @@ spyingSetInterval = (fn, ms) ->
   setTimeout(call, 5)
 
 describe  "services", () ->
+  return
   before (done) ->
     services.initialize
       setInterval: spyingSetInterval

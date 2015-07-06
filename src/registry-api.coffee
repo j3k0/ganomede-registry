@@ -15,7 +15,7 @@ get = (req, res, next) ->
     config: s.config || null
     host: s.host
     port: s.port
-    pingMs: s.pingMs) for s in services.all() when s.pingEndDate > diff)
+    pingMs: s.pingMs) for s in services.all())
   next()
 
 # Check the API secret key validity

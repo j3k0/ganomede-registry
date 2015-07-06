@@ -9,10 +9,8 @@ pingInterval = null
 # Create JSON clients for each linked service
 ensureClients = () ->
   for s in services
-    log.info "createClient",
-      url: "http://#{s.host}:#{s.port}"
-    s.client = s.client || createClient
-      url: "http://#{s.host}:#{s.port}"
+    log.info "createClient", s
+    s.client = s.client || createClient(s)
 
 initialize = (options={}) ->
   services = options.discoveredServices || []
@@ -26,13 +24,13 @@ initialize = (options={}) ->
   readAllAbout()
   interval readAllAbout, pingInterval
 
-# Disable ping for 10 seconds
+# Disable ping for 30 seconds
 disable = (s) ->
   s.client = null
   setTimeout ->
-    s.client = s.client || createClient
-      url: "http://#{s.host}:#{s.port}"
-  , 10000
+    s.client = s.client || createClient(s)
+    # url: s.url"http://#{s.host}:#{s.port}"
+  , 30000
 
 # Retrieve a service's /about
 readAbout = (s) ->
