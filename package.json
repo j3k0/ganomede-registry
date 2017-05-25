@@ -9,6 +9,8 @@
     "start": "./node_modules/.bin/forever start index.js",
     "stop": "./node_modules/.bin/forever stop index.js",
     "test": "make test",
+    "lint": "eslint src/ && coffeelint -q src tests",
+    "coverage": "mocha -b --compilers coffee:coffee-script/register --require blanket -R json-cov tests | bunyan -l 0 > coverage.json",
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect"
   },
