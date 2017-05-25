@@ -1,6 +1,6 @@
 {
   "name": "registry",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "api": "registry/v1",
   "description": "registry micro service",
   "private": true,
