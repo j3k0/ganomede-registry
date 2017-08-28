@@ -1,6 +1,8 @@
 Description
 -----------
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/j3k0/ganomede-registry.svg)](https://greenkeeper.io/)
+
 Registry module:
 
  - maintains the list of running services.
