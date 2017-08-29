@@ -1,4 +1,4 @@
-restify = require "restify"
+restifyClients = require "restify-clients"
 log = require "./log"
 config = require '../config'
 
@@ -19,7 +19,7 @@ initialize = (options={}) ->
   interval = options.setInterval || setInterval
   pingInterval = options.pingInterval || config.pingInterval
   createClient = options.createJsonClient ||
-    restify.createJsonClient.bind(restify)
+    restifyClients.createJsonClient.bind(restifyClients)
 
   # Retrieve all services /about every @pingInterval milliseconds
   ensureClients()

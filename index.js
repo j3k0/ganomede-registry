@@ -33,8 +33,8 @@ else {
     proxy = main.createProxyServer();
 
     // Enable restify plugins
-    server.use(restify.bodyParser());
-    server.use(restify.gzipResponse());
+    server.use(restify.plugins.bodyParser());
+    server.use(restify.plugins.gzipResponse());
 
     // Intitialize backend, add routes
     main.initialize();
