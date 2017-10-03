@@ -21,7 +21,7 @@
     "bouncy": "^3.2.2",
     "bunyan": "^1.2.3",
     "coffee-script": "^1.8.0",
-    "coffeelint": "^1.16.0",
+    "coffeelint": "^2.0.0",
     "concat-stream": "^1.5.2",
     "eslint": "^4.5.0",
     "forever": "^0.15.3",
